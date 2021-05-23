@@ -1,0 +1,198 @@
+results_file
+set Log "Script File Name"
+
+putres "
+#******************************************************************************
+#	This test is part of the following Systems Test Curricula(TC):	 
+#	TC4324CP-12 COMAC C919 RPDU TC for Single Input Utility
+#
+#	Collins Aerospace
+#	Hamilton Sundstrand
+#	Rockford, Illinois 61108-7929
+#	CAGEC 99167
+#******************************************************************************	
+#       
+#	This document is the property of Collins Aerospace and contains confidential
+#	and/or proprietary information. You may not possess, use, copy or disclose
+#	this document or any information in it, for any purpose, including without
+#	limitation, to design, manufacture or repair parts, or obtain any government
+#	approval to do so, without Collins Aerospace' express written permission.
+#	Neither receipt nor possession of this document alone, from any source, 
+#	constitutes such permission. Possession, use, copying or disclosure by 
+#	anyone without Collins Aerospace' express written permission is not 
+#	authorized and may result in criminal and/or civil liability.
+#
+#	U.S. Export Classification: EAR 9E991
+#
+#******************************************************************************"
+
+putres "
+#****************************************************************************
+#        Program:        COMAC
+#        Utility:        Single Input
+#        Test Name:      Output Control
+#        File Name:      c919_rpds_5_2_output_cntrl_cont_fwdbfan2_timing_a664_s1.bat
+#        Spec Requirement:      DS10659/401 Rev basic, Section 5.2
+#*****************************************************************************
+#        Author: Gangadhar Gangappa
+#*****************************************************************************
+#        Design Assurance Level: B
+#*****************************************************************************
+#        Requirements Tested:
+#        REQ:C919_RPDS_DRD_3241
+#        REQ:C919_RPDS_DRD_3289
+#        REQ:C919_RPDS_DRD_3313
+#        REQ:C919_RPDS_DRD_3336
+#        REQ:C919_RPDS_DRD_3337
+#        REQ:C919_RPDS_DRD_1719
+#		 REQ:C919_RPDS_DRD_432
+#		 REQ:C919_RPDS_DRD_433
+#        REQ:C919_RPDS_DRD_2850
+#
+#*****************************************************************************
+#       Revision History:
+#       $Log: c919_rpds_5_2_output_cntrl_cont_fwdbfan2_timing_a664_s1.bat,v $
+#       Revision 1.4  2021/03/29 Shibanee Panigrahi
+#       Req C919_RPDS_DRD_3241, 3289, 3313, 3336 and 3337 were tagged
+#
+#       Revision 1.3  2018/07/16 17:00:52  ashutof
+#       Updated Requirements Tested list
+#
+#       Revision 1.2  2018/05/23 15:43:31  ashutof
+#       Updated Script for Build 3.4
+#
+#       Revision 1.1  2018/02/08 17:47:55  gangadf
+#       Initial Version
+#
+#       
+#		Reviewing Engineer: Ashutosh Kumar
+#		Date: 2/27/2018
+#
+#	    Reviewing Engineer : Sravani shilpa Kandirelli
+#       CR 2840 : updated scripts to Tag the requirments
+#       Date : 03/29/2021
+#*****************************************************************************
+#       Test Support Environment: MBIL
+#*****************************************************************************
+# This document is the property of Collins Aerospace and contains confidential 
+# and/or proprietary information. You may not possess, use, copy or disclose this 
+# document or any information in it,for any purpose, including without limitation,
+# to design, manufacture or repair parts, or obtain any government approval to do so,
+# without Collins Aerospace's express written permission. Neither receipt nor
+# possession of this document alone, from any source, constitutes such permission.
+# Possession, use, copying or disclosure by anyone without Collins Aerospace's 
+# express written permission is not authorized and may result in criminal and/or 
+# civil liability.
+#                                                                                 
+# U.S. Export Classification: EAR 9E991  
+#******************************************************************************
+#       Designer Notes:
+
+#       (1) Estimated run time = sec
+#       (2) Unit Under Test (UUT) = RPDU 11
+#
+#*****************************************************************************
+#       Results Criteria/Evaluation:
+#       (1) c919_rpds_5_2_output_cntrl_cont_fwdbfan2_timing_a664_s1.res
+#
+#*****************************************************************************"
+
+
+putres "
+#*****************************************************************************
+#  Requirement Under Test:
+#        REQ:C919_RPDS_DRD_3241
+#        REQ:C919_RPDS_DRD_3289
+#        REQ:C919_RPDS_DRD_3313
+#        REQ:C919_RPDS_DRD_3336
+#        REQ:C919_RPDS_DRD_3337
+#        REQ:C919_RPDS_DRD_1719
+#		 REQ:C919_RPDS_DRD_432
+#		 REQ:C919_RPDS_DRD_433
+#        REQ:C919_RPDS_DRD_2850
+#
+#  Test Case: 1
+#
+#  Objective: The RPDU shall command the CONT_FWDBFAN2 SSPC ON/OFF within
+#              0.3 sec after RPDU receives all the associated data.
+#
+#
+#  Input Conditions (First Test):
+#    (1) FWD_BFAN2_SUPPLY_CMD is OFF
+#  Expected Outputs (First Test):
+#    (1) CONT_FWDBFAN2 SSPC turns ON with A664 input in less than 0.3 seconds
+#
+#  Input Conditions (Second Test):
+#    (1) FWD_BFAN2_SUPPLY_CMD is ON
+#  Expected Outputs (Second Test):
+#    (1) CONT_FWDBFAN2 SSPC turns OFF with A664 input in less than 0.3 seconds
+#*****************************************************************************"
+
+putres "
+#----------------------------------------
+#   Turn ON timing test with A664 input
+#----------------------------------------"
+
+# Set input conditions
+# Set FWD_BFAN2_SUPPLY_CMD to 5 to turn OFF CONT_FWDBFAN2 SSPC.
+setval rgw06/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A 5 
+
+sleep 1.500
+
+# Verify input conditions
+test_case 1.1 "Verify FWD_BFAN2_SUPPLY_CMD is 5"
+test_value rgw06_shadow/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A == 5
+
+# Verify output conditions
+test_case 1.2 "Verify CONT_FWDBFAN2 is OFF"
+sleep_until_value cont_fwdbfan2_ld/VOLTAGE_DC < 10 timeout 5
+sleep 0.5
+test_value cont_fwdbfan2_ld/VOLTAGE_DC < 10
+
+
+
+# Set input conditions
+# Set FWD_BFAN2_SUPPLY_CMD to 10 to turn ON CONT_FWDBFAN2 SSPC.
+setval rgw06/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A 10 
+
+sleep 1.500
+
+# Verify input conditions
+test_case 1.3 "Verify FWD_BFAN2_SUPPLY_CMD is 10"
+test_value rgw06_shadow/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A == 10
+
+# Verify output conditions
+test_case 1.4 "Verify CONT_FWDBFAN2 is ON"
+sleep_until_value cont_fwdbfan2_ld/VOLTAGE_DC > 18 timeout 5
+sleep 0.5
+test_value cont_fwdbfan2_ld/VOLTAGE_DC > 18
+
+#test_case 1.5 "Test time to turn ON CONT_FWDBFAN2 SSPC"
+
+putres "
+#----------------------------------------
+#   Turn OFF timing test with A664 input
+#----------------------------------------"
+
+
+
+# Set input conditions
+# Set FWD_BFAN2_SUPPLY_CMD to 5 to turn OFF CONT_FWDBFAN2 SSPC.
+setval rgw06/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A 5 
+
+sleep 1.500
+
+# Verify input conditions
+test_case 1.6 "Verify FWD_BFAN2_SUPPLY_CMD is 5"
+test_value rgw06_shadow/RGW06_FWD_BFAN2_SUPPLY_CMD_EPS_1A == 5
+
+# Verify output conditions
+test_case 1.7 "Verify CONT_FWDBFAN2 is OFF"
+sleep_until_value cont_fwdbfan2_ld/VOLTAGE_DC < 10 timeout 5
+sleep 0.5
+test_value cont_fwdbfan2_ld/VOLTAGE_DC < 10
+
+
+putres ""
+putres "*************************************** End of Script *****************************************"
+putres ""
